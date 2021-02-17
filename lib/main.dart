@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:geolocation_test/screens/home_screen.dart';
+import 'package:geolocation_test/screens/cadastros_screen/cadastro_screen.dart';
+import 'package:geolocation_test/screens/home_screen/home_screen.dart';
 import 'package:geolocation_test/utils/theme_data.dart';
 
 void main() {
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomeScreen(),
+      routes: {
+        CadastroScreen.routeName: (ctx) => CadastroScreen(),
+      },
     );
   }
 }
