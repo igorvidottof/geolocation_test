@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocation_test/screens/cadastros_screen/cadastro_screen.dart';
+import 'package:geolocation_test/screens/clientes_screen/clientes_screen.dart';
 import 'package:geolocation_test/widgets/botao_funcionalidade.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,11 +22,10 @@ class HomeScreen extends StatelessWidget {
             children: [
               BotaoFuncionalidade(
                 iconeUrl: 'assets/icons/business/021-shop.png',
-                texto: 'Adicionar Cliente',
+                texto: 'Cadastro de Clientes',
                 isCadastro: true,
                 onPressed: () => Navigator.of(context).pushNamed(
-                  CadastroScreen.routeName,
-                  arguments: 'Adicionar Cliente',
+                  ClientesScreen.routeName,
                 ),
               ),
               BotaoFuncionalidade(

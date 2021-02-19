@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geolocation_test/classes/cliente/cliente.dart';
+import 'package:geolocation_test/classes/cliente/cliente_controller.dart';
 import 'package:geolocation_test/utils/space_functions.dart';
 import 'package:geolocation_test/utils/theme_data.dart';
+import 'package:get_it/get_it.dart';
 
 class FormCliente extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class FormCliente extends StatefulWidget {
 
 class _FormClienteState extends State<FormCliente> {
   final formKey = GlobalKey<FormState>();
-  Cliente cliente = Cliente(
+  final clienteCtrl = GetIt.I.get<ClienteController>();
+  Cliente _cliente = Cliente(
     nome: null,
     endereco: null,
   );
@@ -19,7 +22,7 @@ class _FormClienteState extends State<FormCliente> {
     final formValido = formKey.currentState.validate();
     if (formValido) {
       formKey.currentState.save();
-      print(cliente.nome);
+      clienteCtrl.addCliente(_cliente);
       return true;
     }
     return false;
@@ -27,83 +30,90 @@ class _FormClienteState extends State<FormCliente> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Form(
-          key: formKey,
-          child: Container(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              children: [
-                // NOME DO CLIENTE
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    labelText: 'Nome',
-                    enabledBorder: OutlineInputBorder(borderSide: BORDA_PADRAO),
-                    border: OutlineInputBorder(borderSide: BORDA_FOCO),
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Form(
+            key: formKey,
+            child: Container(
+              child: Column(
+                children: [
+                  // NOME DO CLIENTE
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      labelText: 'Nome',
+                      enabledBorder:
+                          OutlineInputBorder(borderSide: BORDA_PADRAO),
+                      border: OutlineInputBorder(borderSide: BORDA_FOCO),
+                    ),
+                    validator: (valor) {
+                      if (valor.isEmpty)
+                        return 'Campo obrigatório';
+                      else
+                        return null;
+                    },
+                    onSaved: (valor) {
+                      _cliente = _cliente.copyWith(nome: valor);
+                    },
                   ),
-                  validator: (valor) {
-                    if (valor.isEmpty)
-                      return 'Campo obrigatório';
-                    else
-                      return null;
-                  },
-                  onSaved: (valor) {
-                    cliente = cliente.copyWith(nome: valor);
-                  },
-                ),
-                addEspacoVertical(10),
-                // ENDEREÇO DO CLIENTE
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    labelText: 'Endereço',
-                    enabledBorder: OutlineInputBorder(borderSide: BORDA_PADRAO),
-                    border: OutlineInputBorder(borderSide: BORDA_FOCO),
+                  addEspacoVertical(10),
+                  // ENDEREÇO DO CLIENTE
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      labelText: 'Endereço',
+                      enabledBorder:
+                          OutlineInputBorder(borderSide: BORDA_PADRAO),
+                      border: OutlineInputBorder(borderSide: BORDA_FOCO),
+                    ),
+                    validator: (valor) {
+                      if (valor.isEmpty)
+                        return 'Campo obrigatório';
+                      else
+                        return null;
+                    },
+                    onSaved: (valor) {
+                      _cliente = _cliente.copyWith(endereco: valor);
+                    },
                   ),
-                  validator: (valor) {
-                    if (valor.isEmpty)
-                      return 'Campo obrigatório';
-                    else
-                      return null;
-                  },
-                  onSaved: (valor) {
-                    cliente = cliente.copyWith(endereco: valor);
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            OutlineButton(
-              borderSide: BORDA_PADRAO,
-              child: Text('Salvar form'),
-              onPressed: () {
-                if (_salvaForm()) {
-                  formKey.currentState.reset();
-                  FocusScope.of(context).unfocus();
-                }
-              },
-            ),
-            OutlineButton(
-              borderSide: BORDA_PADRAO,
-              child: Text('Limpar campos'),
-              onPressed: () {
-                formKey.currentState.reset();
-                FocusScope.of(context).unfocus();
-              },
-            ),
-          ],
-        ),
-      ],
+          addEspacoVertical(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              OutlineButton(
+                borderSide: BORDA_PADRAO,
+                child: Text('Salvar'),
+                onPressed: () {
+                  if (_salvaForm()) {
+                    formKey.currentState.reset();
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+              ),
+              // addEspacoHorizontal(5),
+              // OutlineButton(
+              //   borderSide: BORDA_PADRAO,
+              //   child: Text('Cancelar'),
+              //   onPressed: () {
+              //     formKey.currentState.reset();
+              //     FocusScope.of(context).unfocus();
+              //   },
+              // ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
