@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocation_test/classes/cliente/cliente_controller.dart';
-import 'package:geolocation_test/screens/cadastros_screen/form_cliente.dart';
+import 'package:geolocation_test/screens/clientes_screen/form_cliente.dart';
 import 'package:geolocation_test/utils/theme_data.dart';
 import 'package:geolocation_test/widgets/icon_button_personalizado.dart';
 import 'package:get_it/get_it.dart';
@@ -16,11 +16,23 @@ class ClientesScreen extends StatelessWidget {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text(
-            'Cadastrar Cliente',
-            style: temaTexto.headline3,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                FormCliente(),
+              ],
+            ),
           ),
-          content: FormCliente(),
         );
       },
     );

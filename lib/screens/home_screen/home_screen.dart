@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocation_test/screens/cadastros_screen/cadastro_screen.dart';
 import 'package:geolocation_test/screens/clientes_screen/clientes_screen.dart';
 import 'package:geolocation_test/widgets/botao_funcionalidade.dart';
 
