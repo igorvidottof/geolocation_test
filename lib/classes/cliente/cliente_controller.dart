@@ -11,7 +11,7 @@ abstract class _ClienteControllerBase with Store {
   void addCliente(Cliente cliente) {
     clientes.add(cliente);
     clientes.forEach((cliente) {
-      print(cliente.nome);
+      print(cliente.id);
     });
   }
 }

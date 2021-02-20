@@ -5,6 +5,7 @@ class Cliente {
     @required this.nome,
     @required this.endereco,
   });
+  final String id = DateTime.now().toString();
   final String nome;
   final String endereco;
 

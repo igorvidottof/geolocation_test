@@ -5,6 +5,18 @@ const COR_PRETA = Colors.black;
 const COR_CINZA = Colors.grey;
 const Color COR_BRANCA = Colors.white;
 const COR_AZUL = Color.fromRGBO(20, 25, 45, 1);
+const COR_AZUL_SWATCH = MaterialColor(0xFF14192D, {
+  50: Color.fromRGBO(20, 25, 45, .1),
+  100: Color.fromRGBO(20, 25, 45, .2),
+  200: Color.fromRGBO(20, 25, 45, .3),
+  300: Color.fromRGBO(20, 25, 45, .4),
+  400: Color.fromRGBO(20, 25, 45, .5),
+  500: Color.fromRGBO(20, 25, 45, .6),
+  600: Color.fromRGBO(20, 25, 45, .7),
+  700: Color.fromRGBO(20, 25, 45, .8),
+  800: Color.fromRGBO(20, 25, 45, .9),
+  900: Color.fromRGBO(20, 25, 45, 1),
+});
 
 // BORDAS
 const BorderSide BORDA_PADRAO = BorderSide(

@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocation_test/classes/cliente/cliente_controller.dart';
 import 'package:geolocation_test/screens/clientes_screen/form_cliente.dart';
 import 'package:geolocation_test/utils/theme_data.dart';
+import 'package:geolocation_test/widgets/floating_action_button_personalizado.dart';
 import 'package:geolocation_test/widgets/icon_button_personalizado.dart';
 import 'package:get_it/get_it.dart';
 
@@ -55,7 +56,6 @@ class ClientesScreen extends StatelessWidget {
               itemCount: clienteCtrl.clientes.length,
               itemBuilder: (ctx, i) {
                 final cliente = clienteCtrl.clientes[i];
-                // return Text(clientes[i].nome);
                 return Card(
                   shadowColor: COR_AZUL,
                   elevation: 3,
@@ -101,13 +101,9 @@ class ClientesScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: COR_AZUL,
-        child: Icon(
-          Icons.person_add,
-          color: COR_BRANCA,
-        ),
-        onPressed: () => _mostraFormulario(context),
+      floatingActionButton: FloatingActionButtonPersonalizado(
+        icone: Icons.person_add,
+        onPressed: (context) => _mostraFormulario(context),
       ),
     );
   }

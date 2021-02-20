@@ -51,13 +51,14 @@ class BotaoFuncionalidade extends StatelessWidget {
               ),
               Image.asset(
                 iconeUrl,
-                height: 100,
-                width: 100,
+                height: 80,
+                width: 80,
               ),
               addEspacoVertical(15),
               Text(
                 texto,
                 style: temaTexto.bodyText2,
+                textAlign: TextAlign.center,
               ),
             ],
           ),
