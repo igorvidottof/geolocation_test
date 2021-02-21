@@ -104,6 +104,7 @@ class _FormClienteState extends State<FormCliente> {
                 if (_salvaForm()) {
                   formKey.currentState.reset();
                   FocusScope.of(context).unfocus();
+                  Navigator.of(context).pop();
                 }
               },
             ),

@@ -91,6 +91,7 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
 
                   // DROPDOWNBUTTON CLIENTE
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Cliente: ',
@@ -127,6 +128,7 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
                           if (screenCtrl.dataSelecionada.isEmpty) {
                             return;
                           }
+                          Navigator.of(context).pop();
                           agendamentoCtrl.addAgendamento(
                             Agendamento(
                               clienteId: _clienteSelecionadoId,
@@ -175,19 +177,29 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
           padding: EdgeInsets.all(10),
           child: Observer(
             builder: (_) {
-              return ListView.builder(
-                itemCount: agendamentoCtrl.agendamentos.length,
-                itemBuilder: (ctx, i) {
-                  final agendamento = agendamentoCtrl.agendamentos[i];
-                  final cliente = clienteCtrl.getClienteById(
-                    agendamento.clienteId,
-                  );
-                  return AgendamentoListItem(
-                    key: ValueKey(i),
-                    agendamento: agendamento,
-                    cliente: cliente,
-                  );
-                },
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: agendamentoCtrl.agendamentos.length,
+                      itemBuilder: (ctx, i) {
+                        final agendamento = agendamentoCtrl.agendamentos[i];
+                        final cliente = clienteCtrl.getClienteById(
+                          agendamento.clienteId,
+                        );
+                        return AgendamentoListItem(
+                          key: ValueKey(i),
+                          agendamento: agendamento,
+                          cliente: cliente,
+                        );
+                      },
+                    ),
+                    // ESPAÇO FLOATING ACTION BUTTON
+                    addEspacoVertical(80)
+                  ],
+                ),
               );
             },
           ),
@@ -273,48 +285,63 @@ class _AgendamentoListItemState extends State<AgendamentoListItem> {
                       Text('Visita Concluída')
                     ],
                   )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _visitaIniciada
-                          ? CircularProgressIndicator(
-                              backgroundColor: COR_AZUL,
-                            )
-                          : OutlineButton(
-                              child: Text('Iniciar Visita'),
-                              onPressed: () {
-                                setState(() {
-                                  _visitaIniciada = true;
-                                });
-                              },
-                            ),
-                      addEspacoHorizontal(8),
-                      OutlineButton(
-                        child: Text('Melhor Trajeto'),
-                        onPressed: () {
-                          MapsService.abrirMaps(widget.cliente.endereco);
-                        },
-                      ),
-                      _visitaIniciada
-                          ? Row(
-                              children: [
-                                addEspacoHorizontal(8),
-                                OutlineButton(
-                                  child: Text('Finalizar Visita'),
-                                  onPressed: () {
-                                    setState(() {
-                                      _visitaIniciada = false;
-
-                                      widget.agendamento.visitaConcluida = true;
-                                    });
-                                  },
+                : _visitaIniciada
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text('Visita em andamento'),
+                              addEspacoHorizontal(5),
+                              SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  backgroundColor: COR_AZUL,
                                 ),
-                              ],
-                            )
-                          : SizedBox()
-                    ],
-                  ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlineButton(
+                                child: Text('Melhor Trajeto'),
+                                onPressed: () {
+                                  MapsService.abrirMaps(
+                                      widget.cliente.endereco);
+                                },
+                              ),
+                              addEspacoHorizontal(8),
+                              OutlineButton(
+                                child: Text('Finalizar Visita'),
+                                onPressed: () {
+                                  setState(() {
+                                    _visitaIniciada = false;
+
+                                    widget.agendamento.visitaConcluida = true;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          OutlineButton(
+                            child: Text('Iniciar Visita'),
+                            onPressed: () {
+                              setState(() {
+                                _visitaIniciada = true;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
           ],
         ),
       ),

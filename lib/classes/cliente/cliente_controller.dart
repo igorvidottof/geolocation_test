@@ -5,7 +5,13 @@ part 'cliente_controller.g.dart';
 class ClienteController = _ClienteControllerBase with _$ClienteController;
 
 abstract class _ClienteControllerBase with Store {
-  final clientes = List<Cliente>().asObservable();
+  final clientes = <Cliente>[
+    Cliente(
+      nome: 'MFerreti Distribuidora',
+      endereco:
+          'Terminal Intermodal de Carga - R. Ancilla Tonini Gago, 465 - Techno Park, Campinas - SP, 13069-135',
+    )
+  ].asObservable();
 
   @action
   void addCliente(Cliente cliente) {

@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
               ),
               BotaoFuncionalidade(
                 iconeUrl: 'assets/icons/business/067-map.png',
-                texto: 'Calcular trajeto',
+                texto: 'Futuras Implementações',
                 isCadastro: false,
                 onPressed: () {},
               ),
