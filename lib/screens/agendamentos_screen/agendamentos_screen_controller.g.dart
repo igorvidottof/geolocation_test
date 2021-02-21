@@ -26,10 +26,27 @@ mixin _$AgendamentosScreenController
     });
   }
 
+  final _$clienteSelecionadoAtom =
+      Atom(name: '_AgendamentosScreenControllerBase.clienteSelecionado');
+
+  @override
+  String get clienteSelecionado {
+    _$clienteSelecionadoAtom.reportRead();
+    return super.clienteSelecionado;
+  }
+
+  @override
+  set clienteSelecionado(String value) {
+    _$clienteSelecionadoAtom.reportWrite(value, super.clienteSelecionado, () {
+      super.clienteSelecionado = value;
+    });
+  }
+
   @override
   String toString() {
     return '''
-dataSelecionada: ${dataSelecionada}
+dataSelecionada: ${dataSelecionada},
+clienteSelecionado: ${clienteSelecionado}
     ''';
   }
 }

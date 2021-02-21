@@ -51,8 +51,6 @@ class ClientesScreen extends StatelessWidget {
         child: Observer(
           builder: (_) {
             return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
               itemCount: clienteCtrl.clientes.length,
               itemBuilder: (ctx, i) {
                 final cliente = clienteCtrl.clientes[i];

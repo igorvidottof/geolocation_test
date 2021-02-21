@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geolocation_test/classes/agendamento/agendamento.dart';
 import 'package:geolocation_test/classes/agendamento/agendamento_controller.dart';
+import 'package:geolocation_test/classes/cliente/cliente.dart';
 import 'package:geolocation_test/classes/cliente/cliente_controller.dart';
 import 'package:geolocation_test/screens/agendamentos_screen/agendamentos_screen_controller.dart';
+import 'package:geolocation_test/services/maps_service.dart';
 import 'package:geolocation_test/utils/theme_data.dart';
 import 'package:geolocation_test/widgets/floating_action_button_personalizado.dart';
 import 'package:geolocation_test/utils/space_functions.dart';
+import 'package:geolocation_test/widgets/icon_button_personalizado.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
@@ -56,6 +59,7 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
                   ),
                   Text('Agendar Visita', style: temaTexto.headline3),
                   addEspacoVertical(20),
+                  // DATEPICKER DATA
                   Row(
                     children: [
                       Text(
@@ -84,13 +88,14 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
                     ],
                   ),
                   addEspacoVertical(10),
-                  Row(
+
+                  // DROPDOWNBUTTON CLIENTE
+                  Column(
                     children: [
                       Text(
                         'Cliente: ',
                         style: temaTexto.headline4,
                       ),
-                      addEspacoHorizontal(10),
                       DropdownButton(
                         value: _clienteSelecionado,
                         items: clienteCtrl.clientes.map((cliente) {
@@ -119,10 +124,14 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
                         child: Text('Salvar'),
                         borderSide: BORDA_PADRAO,
                         onPressed: () {
+                          if (screenCtrl.dataSelecionada.isEmpty) {
+                            return;
+                          }
                           agendamentoCtrl.addAgendamento(
                             Agendamento(
                               clienteId: _clienteSelecionadoId,
                               data: screenCtrl.dataSelecionada,
+                              visitaConcluida: false,
                             ),
                           );
                           screenCtrl.dataSelecionada = '';
@@ -155,14 +164,159 @@ class _AgendamentosScreenState extends State<AgendamentosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final temaTexto = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Gerenciamento de visitas'),
       ),
-      body: Text('Visita'),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Observer(
+            builder: (_) {
+              return ListView.builder(
+                itemCount: agendamentoCtrl.agendamentos.length,
+                itemBuilder: (ctx, i) {
+                  final agendamento = agendamentoCtrl.agendamentos[i];
+                  final cliente = clienteCtrl.getClienteById(
+                    agendamento.clienteId,
+                  );
+                  return AgendamentoListItem(
+                    key: ValueKey(i),
+                    agendamento: agendamento,
+                    cliente: cliente,
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButtonPersonalizado(
         icone: Icons.alarm_add,
         onPressed: (context) => _mostraFormulario(context),
+      ),
+    );
+  }
+}
+
+class AgendamentoListItem extends StatefulWidget {
+  const AgendamentoListItem({this.key, this.agendamento, this.cliente})
+      : super(key: key);
+  final Agendamento agendamento;
+  final Cliente cliente;
+  final Key key;
+
+  @override
+  _AgendamentoListItemState createState() => _AgendamentoListItemState();
+}
+
+class _AgendamentoListItemState extends State<AgendamentoListItem> {
+  bool _visitaIniciada = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final temaTexto = Theme.of(context).textTheme;
+    return Card(
+      shadowColor: COR_AZUL,
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              leading: Icon(
+                Icons.perm_contact_calendar,
+                size: 30,
+              ),
+              title: Text(
+                widget.agendamento.data,
+                style: temaTexto.headline4,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+              ),
+              subtitle: Text(
+                widget.cliente.nome,
+                style: temaTexto.bodyText2,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButtonPersonalizado(
+                    icon: Icons.edit,
+                    onPressed: () {},
+                  ),
+                  IconButtonPersonalizado(
+                    icon: Icons.delete,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            Divider(),
+            widget.agendamento.visitaConcluida
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.done,
+                        color: Colors.green,
+                      ),
+                      addEspacoHorizontal(5),
+                      Text('Visita Concluída')
+                    ],
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      _visitaIniciada
+                          ? CircularProgressIndicator(
+                              backgroundColor: COR_AZUL,
+                            )
+                          : OutlineButton(
+                              child: Text('Iniciar Visita'),
+                              onPressed: () {
+                                setState(() {
+                                  _visitaIniciada = true;
+                                });
+                              },
+                            ),
+                      addEspacoHorizontal(8),
+                      OutlineButton(
+                        child: Text('Melhor Trajeto'),
+                        onPressed: () {
+                          MapsService.abrirMaps(widget.cliente.endereco);
+                        },
+                      ),
+                      _visitaIniciada
+                          ? Row(
+                              children: [
+                                addEspacoHorizontal(8),
+                                OutlineButton(
+                                  child: Text('Finalizar Visita'),
+                                  onPressed: () {
+                                    setState(() {
+                                      _visitaIniciada = false;
+
+                                      widget.agendamento.visitaConcluida = true;
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : SizedBox()
+                    ],
+                  ),
+          ],
+        ),
       ),
     );
   }

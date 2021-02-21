@@ -14,4 +14,8 @@ abstract class _ClienteControllerBase with Store {
       print(cliente.id);
     });
   }
+
+  Cliente getClienteById(String clienteId) {
+    return clientes.firstWhere((cliente) => cliente.id == clienteId);
+  }
 }
